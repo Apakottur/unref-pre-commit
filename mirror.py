@@ -3,22 +3,21 @@
 # dependencies = [
 #   "httpx==0.28.1",
 #   "packaging==26.3",
-#   "shpyx==1.0.3",
 # ]
 # ///
 """
-Mirror each release of unref on PyPI that is newer than the one this repository names.
+Point the hook at the latest release of unref on PyPI, if it is newer than the one this repository names.
 
-Each release is a commit that sets the version in `pyproject.toml` and the README, tagged with the version. Run with
-`uv run --no-project mirror.py`, and push the commits and the tags.
+Run with `uv run --no-project mirror.py`. The version is set in `pyproject.toml` and the README. In a workflow, it is
+also written to the `version` output, once it changes.
 """
 
+import os
 import re
 import tomllib
 from pathlib import Path
 
 import httpx
-import shpyx
 from packaging.requirements import Requirement
 from packaging.version import Version
 
@@ -30,8 +29,8 @@ _FILES = {
 }
 
 
-def _released_versions() -> list[Version]:
-    """The versions of unref on PyPI, oldest first, without pre-releases and yanked releases."""
+def _latest_version() -> Version:
+    """The latest version of unref on PyPI, without pre-releases and yanked releases."""
     response = httpx.get("https://pypi.org/pypi/unref/json", timeout=30)
     response.raise_for_status()
     versions = [
@@ -39,7 +38,7 @@ def _released_versions() -> list[Version]:
         for version, files in response.json()["releases"].items()
         if files and not all(file["yanked"] for file in files)
     ]
-    return sorted(version for version in versions if not version.is_prerelease)
+    return max(version for version in versions if not version.is_prerelease)
 
 
 def _current_version() -> Version:
@@ -52,24 +51,20 @@ def _current_version() -> Version:
     return Version(specifier.version)
 
 
-def _set_version(version: Version) -> None:
+def main() -> None:
+    current, latest = _current_version(), _latest_version()
+    if latest <= current:
+        print(f"unref {current} is the latest release.")
+        return
     for path, pattern in _FILES.items():
         file = _ROOT / path
-        text, count = re.subn(pattern, rf"\g<1>{version}", file.read_text())
+        text, count = re.subn(pattern, rf"\g<1>{latest}", file.read_text())
         assert count, f"No version of unref found in {path}."
         file.write_text(text)
-
-
-def main() -> None:
-    current = _current_version()
-    for version in _released_versions():
-        if version <= current:
-            continue
-        _set_version(version)
-        shpyx.run(["git", "add", *_FILES], exec_dir=_ROOT)
-        shpyx.run(["git", "commit", "--message", f"Mirror unref {version}"], exec_dir=_ROOT)
-        shpyx.run(["git", "tag", f"v{version}"], exec_dir=_ROOT)
-        print(f"Mirrored unref {version}.")
+    print(f"Set the version of unref to {latest}.")
+    if output := os.environ.get("GITHUB_OUTPUT"):
+        with Path(output).open("a") as stream:
+            stream.write(f"version={latest}\n")
 
 
 if __name__ == "__main__":

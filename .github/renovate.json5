@@ -1,0 +1,28 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+  // No Dependency Dashboard issue. The pull requests and the Mend web portal show the updates.
+  dependencyDashboard: { enabled: false },
+  // Once a week, as unref's, in batches rather than one pull request per dependency.
+  schedule: ["before 4am on Wednesday"],
+  // A release that is a few days old has had time to be yanked or reported as malicious.
+  minimumReleaseAge: "7 days",
+  // The version of unref in pyproject.toml is set by mirror.py, so the pep621 manager is left out.
+  enabledManagers: ["github-actions", "pep723"],
+  packageRules: [
+    {
+      // Runners stay on ubuntu-latest.
+      matchManagers: ["github-actions"],
+      matchDatasources: ["github-runners"],
+      enabled: false,
+    },
+    {
+      groupName: "GitHub Actions",
+      matchManagers: ["github-actions"],
+    },
+    {
+      groupName: "mirror.py dependencies",
+      matchManagers: ["pep723"],
+    },
+  ],
+}
