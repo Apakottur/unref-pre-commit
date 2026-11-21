@@ -3,15 +3,10 @@
   extends: ["config:recommended"],
   // No Dependency Dashboard issue. The pull requests and the Mend web portal show the updates.
   dependencyDashboard: { enabled: false },
-  // Once a week, as unref's, in batches rather than one pull request per dependency.
+  // Once a week, as unref's, in one pull request for all the dependencies.
   schedule: ["before 4am on Wednesday"],
   // A release that is a few days old has had time to be yanked or reported as malicious.
   minimumReleaseAge: "7 days",
-  // uv.lock also updates its transitive dependencies.
-  lockFileMaintenance: {
-    enabled: true,
-    schedule: ["before 4am on Wednesday"],
-  },
   enabledManagers: ["github-actions", "pep621"],
   packageRules: [
     {
@@ -21,12 +16,11 @@
       enabled: false,
     },
     {
-      groupName: "GitHub Actions",
-      matchManagers: ["github-actions"],
-    },
-    {
-      groupName: "Python dependencies",
-      matchManagers: ["pep621"],
+      // Major updates too, as there are few dependencies.
+      groupName: "all dependencies",
+      groupSlug: "all",
+      matchPackageNames: ["*"],
+      separateMajorMinor: false,
     },
     {
       // mirror.py sets the version of unref, once it is on PyPI.
