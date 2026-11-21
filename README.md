@@ -19,9 +19,4 @@ repos:
 ```
 
 The hook checks the whole project rather than the changed files, as finding unused code needs every file. To
-configure unref, see its [documentation](https://github.com/Apakottur/unref).
-
-## Versions
-
-Each release of unref on PyPI is mirrored here as a tag of the same version, by a workflow that checks PyPI every
-hour.
+configure unref, see its [documentation](https://unref.readthedocs.io/en/latest/configuration/).
