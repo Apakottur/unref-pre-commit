@@ -7,8 +7,12 @@
   schedule: ["before 4am on Wednesday"],
   // A release that is a few days old has had time to be yanked or reported as malicious.
   minimumReleaseAge: "7 days",
-  // The version of unref in pyproject.toml is set by mirror.py, so the pep621 manager is left out.
-  enabledManagers: ["github-actions", "pep723"],
+  // uv.lock also updates its transitive dependencies.
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ["before 4am on Wednesday"],
+  },
+  enabledManagers: ["github-actions", "pep621"],
   packageRules: [
     {
       // Runners stay on ubuntu-latest.
@@ -21,8 +25,13 @@
       matchManagers: ["github-actions"],
     },
     {
-      groupName: "mirror.py dependencies",
-      matchManagers: ["pep723"],
+      groupName: "Python dependencies",
+      matchManagers: ["pep621"],
+    },
+    {
+      // mirror.py sets the version of unref, once it is on PyPI.
+      matchPackageNames: ["unref"],
+      enabled: false,
     },
   ],
 }

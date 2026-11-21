@@ -1,6 +1,18 @@
+[dependency-groups]
+dev = [
+  "httpx==0.28.1",
+  "packaging==26.3",
+  "shpyx==1.0.3",
+]
+
 [project]
 name = "unref-pre-commit"
-version = "0.0.0"
+version = "1.0.0"
+requires-python = ">=3.11"
 dependencies = [
   "unref==0.4.0",
 ]
+
+[tool.uv.dependency-groups]
+# Our own scripts run on Python 3.15, as unref's do. Users of the hook only need the requires-python of the project.
+dev = { requires-python = ">=3.15" }

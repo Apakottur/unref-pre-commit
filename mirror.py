@@ -1,16 +1,8 @@
-# /// script
-# requires-python = ">=3.12"
-# dependencies = [
-#   "httpx==0.28.1",
-#   "packaging==26.3",
-#   "shpyx==1.0.3",
-# ]
-# ///
 """
 Mirror each release of unref on PyPI that is newer than the one this repository names.
 
-Each release is a commit that sets the version in `pyproject.toml` and the README, tagged with the version. Run with
-`uv run --no-project mirror.py`, and push the commits and the tags.
+Each release is a commit that sets the version in `pyproject.toml`, `uv.lock` and the README, tagged with the version.
+Run with `uv run mirror.py`, and push the commits and the tags.
 """
 
 import re
@@ -66,7 +58,8 @@ def main() -> None:
         if version <= current:
             continue
         _set_version(version)
-        shpyx.run(["git", "add", *_FILES], exec_dir=_ROOT)
+        shpyx.run(["uv", "lock"], exec_dir=_ROOT)
+        shpyx.run(["git", "add", *_FILES, "uv.lock"], exec_dir=_ROOT)
         shpyx.run(["git", "commit", "--message", f"Mirror unref {version}"], exec_dir=_ROOT)
         shpyx.run(["git", "tag", f"v{version}"], exec_dir=_ROOT)
         print(f"Mirrored unref {version}.")

@@ -35,7 +35,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Mirror the new releases
-        run: uv run --no-project mirror.py
+        run: uv run --locked mirror.py
 
       - name: Push and release the new versions
         env:
