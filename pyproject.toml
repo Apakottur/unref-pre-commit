@@ -1,0 +1,6 @@
+[project]
+name = "unref-pre-commit"
+version = "0.0.0"
+dependencies = [
+  "unref==0.4.0",
+]
