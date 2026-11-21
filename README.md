@@ -18,5 +18,14 @@ repos:
       - id: unref
 ```
 
+prek reads `.pre-commit-config.yaml` too, but it also supports its own `prek.toml` format:
+
+```toml
+[[repos]]
+repo = "https://github.com/Apakottur/unref-pre-commit"
+rev = "v0.4.0"
+hooks = [{ id = "unref" }]
+```
+
 The hook checks the whole project rather than the changed files, as finding unused code needs every file. To
 configure unref, see its [documentation](https://unref.readthedocs.io/en/latest/configuration/).

@@ -18,7 +18,7 @@ _ROOT = Path(__file__).parent
 # Each file, with the pattern of the version in it. The part before the version is kept.
 _FILES = {
     "pyproject.toml": r'("unref==)[0-9.]+',
-    "README.md": r"(rev: v)[0-9.]+",
+    "README.md": r'(rev: v|rev = "v)[0-9.]+',
 }
 
 
