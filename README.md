@@ -23,5 +23,5 @@ configure unref, see its [documentation](https://github.com/Apakottur/unref).
 
 ## Versions
 
-Each release of unref on PyPI is mirrored here as a tag of the same version. A workflow checks PyPI every hour and
-opens a pull request for a new release, and the release is tagged once it is merged.
+Each release of unref on PyPI is mirrored here as a tag of the same version, by a workflow that checks PyPI every
+hour.
