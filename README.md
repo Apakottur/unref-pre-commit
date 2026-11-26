@@ -13,7 +13,7 @@ Add the hook to your `.pre-commit-config.yaml`:
 ```yaml
 repos:
   - repo: https://github.com/Apakottur/unref-pre-commit
-    rev: v0.5.1
+    rev: v0.6.0
     hooks:
       - id: unref
 ```
@@ -23,7 +23,7 @@ prek reads `.pre-commit-config.yaml` too, but it also supports its own `prek.tom
 ```toml
 [[repos]]
 repo = "https://github.com/Apakottur/unref-pre-commit"
-rev = "v0.5.1"
+rev = "v0.6.0"
 hooks = [{ id = "unref" }]
 ```
 
